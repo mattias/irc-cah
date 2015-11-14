@@ -28,7 +28,7 @@ Some of these commands reply as notice. If you use [Irssi](http://www.irssi.org)
 * Node.js 0.10.*
 
 ##Run
-Run the bot by running `node app.js`, or if you want to run it with production settings instead of development, run `NODE_ENV=production node app.js`.
+Run the bot by running `node app.js`, or if you want to run it with development settings instead of production, run `NODE_ENV=development node app.js`.
 
 ##Configuration
 Main configuration files are located in `config/env`. There are two files by default for two different environments, development and production (e.g. if you want to test the bot on a separate channel). For the `clientOptions` directive, refer to the [Node-IRC documentation](https://node-irc.readthedocs.org/en/latest/API.html#client).
