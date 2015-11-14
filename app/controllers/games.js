@@ -37,9 +37,9 @@ var Games = function Games() {
             // init game
             var game = new Game(channel, client, config, cmdArgs);
             self.games.push(game);
-            var player = new Player(nick, user, hostname);
-            game.addPlayer(player);
+            self.join(client, message, cmdArgs)
         }
+
     };
 
     /**
