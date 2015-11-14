@@ -21,7 +21,8 @@ Some of these commands reply as notice. If you use [Irssi](http://www.irssi.org)
 
 ##Install
 1. Clone the repository.
-2. Edit configuration files with your channel & server settings.
+2. Copy the configuration file production.json.example to production.json
+2. Edit configuration file with your channel & server settings.
 3. Install dependencies using `npm install`.
 
 ###Requirements
