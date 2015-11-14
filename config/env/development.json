@@ -19,6 +19,14 @@
             }
         ]
     },
+    "userJoinCommands": {
+        "#pi-cah-dev": [
+            {
+                "target": "",
+                "message": ""
+            }
+        ]
+    },
     "clientOptions": {
         "userName": "cah",
         "debug": true,

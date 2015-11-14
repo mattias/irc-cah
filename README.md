@@ -87,6 +87,9 @@ This example will send you a private message when the bot has connected to serve
 	]
 }
 ```
+###Other Configuration Settings
+* `userJoinCommands` - action to take when an irc user joins the channel, such as a greeting.
+
 ##TODO
 * Save game & player data to MongoDB for all time top scores & other statistics.
 * Config options for rule variations, such as voting the best instead of card czar choosing the winner.

@@ -19,6 +19,14 @@
             }
         ]
     },
+    "userJoinCommands": {
+        "#cah": [
+            {
+                "target": "",
+                "message": ""
+            }
+        ]
+    },
     "clientOptions": {
         "userName":             "cah",
         "channels":             ["#cah"],

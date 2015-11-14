@@ -44,6 +44,14 @@ exports.init = function () {
                 });
             }
         }
+        else if (typeof config.userJoinCommands !== 'undefined' && config.userJoinCommands.hasOwnProperty(channel) && config.userJoinCommands[channel].length > 0) {
+            console.log("User '" + nick + "' joined " + channel);
+            _.each(config.userJoinCommands[channel], function (cmd) {
+                if(cmd.target && cmd.message) {
+                    client.say(cmd.target, cmd.message);
+                }
+            });
+        }
     });
 
     // output errors
