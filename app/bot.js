@@ -33,12 +33,24 @@ exports.init = function () {
 
     // handle joins to channels for logging
     client.addListener('join', function (channel, nick, message) {
-        console.log('Joined ' + channel + ' as ' + nick);
         // Send join command after joining a channel
-        if (typeof config.joinCommands !== 'undefined' && config.joinCommands.hasOwnProperty(channel) && config.joinCommands[channel].length > 0) {
-            _.each(config.joinCommands[channel], function (cmd) {
+        if (config.nick === nick) {
+            console.log('Joined ' + channel + ' as ' + nick);
+            if (typeof config.joinCommands !== 'undefined' &&config.joinCommands.hasOwnProperty(channel) && config.joinCommands[channel].length > 0) {
+                _.each(config.joinCommands[channel], function (cmd) {
+                    if(cmd.target && cmd.message) {
+                        message = _.template(cmd.message)
+                        client.say(cmd.target, message({nick: nick, channel: channel}));
+                    }
+                });
+            }
+        }
+        else if (typeof config.userJoinCommands !== 'undefined' && config.userJoinCommands.hasOwnProperty(channel) && config.userJoinCommands[channel].length > 0) {
+            console.log("User '" + nick + "' joined " + channel);
+            _.each(config.userJoinCommands[channel], function (cmd) {
                 if(cmd.target && cmd.message) {
-                    client.say(cmd.target, cmd.message);
+                    message = _.template(cmd.message)
+                    client.say(cmd.target, message({nick: nick, channel: channel}));
                 }
             });
         }
