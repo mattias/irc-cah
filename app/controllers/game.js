@@ -105,6 +105,14 @@ var Game = function Game(channel, client, config, cmdArgs) {
             self.showPoints();
         }
 
+        if (self.config.voicePlayers === true) {
+            var i, j,
+                devoiceNicks = _.pluck(self.players, 'nick');
+            for (i=0, j=devoiceNicks.length; i<j; i+=4) {
+                var args = ['MODE', channel, '-vvvv'].concat(devoiceNicks.slice(i, i+4))
+                client.send.apply(this, args)
+            }
+        }
         // clear all timers
         clearTimeout(self.startTimeout);
         clearTimeout(self.stopTimeout);
@@ -582,6 +590,9 @@ var Game = function Game(channel, client, config, cmdArgs) {
                 // enough players, start the game
                 self.nextRound();
             }
+            if (self.config.voicePlayers === true) {
+                self.client.send('MODE', channel, '+v', player.nick)
+            }
             return player;
         } else {
             console.log('Player tried to join again', player.nick, player.user, player.hostname);
@@ -619,6 +630,9 @@ var Game = function Game(channel, client, config, cmdArgs) {
             });
             if (options.silent !== true) {
                 self.say(player.nick + ' has left the game');
+            }
+            if (self.config.voicePlayers === true) {
+                self.client.send('MODE', channel, '-v', player.nick)
             }
 
             // check if remaining players have all player

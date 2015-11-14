@@ -91,6 +91,7 @@ This example will send you a private message when the bot has connected to serve
 ###Other Configuration Settings
 * `startOnFirstJoin` - automatically start a game if someone does !join when there's no game running.
 * `userJoinCommands` - action to take when an irc user joins the channel, such as a greeting.
+* `voicePlayers` - give current players +v on !join. (Bot will assume it is opped.)
 
 ##TODO
 * Save game & player data to MongoDB for all time top scores & other statistics.
