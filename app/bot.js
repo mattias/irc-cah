@@ -39,7 +39,8 @@ exports.init = function () {
             if (typeof config.joinCommands !== 'undefined' &&config.joinCommands.hasOwnProperty(channel) && config.joinCommands[channel].length > 0) {
                 _.each(config.joinCommands[channel], function (cmd) {
                     if(cmd.target && cmd.message) {
-                        client.say(cmd.target, cmd.message);
+                        message = _.template(cmd.message)
+                        client.say(cmd.target, message({nick: nick, channel: channel}));
                     }
                 });
             }
@@ -48,7 +49,8 @@ exports.init = function () {
             console.log("User '" + nick + "' joined " + channel);
             _.each(config.userJoinCommands[channel], function (cmd) {
                 if(cmd.target && cmd.message) {
-                    client.say(cmd.target, cmd.message);
+                    message = _.template(cmd.message)
+                    client.say(cmd.target, message({nick: nick, channel: channel}));
                 }
             });
         }

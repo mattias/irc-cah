@@ -22,8 +22,8 @@
     "userJoinCommands": {
         "#pi-cah-dev": [
             {
-                "target": "",
-                "message": ""
+                "target": "#pi-cah-dev",
+                "message": "Hi <%= nick %>! Type !join to play"
             }
         ]
     },

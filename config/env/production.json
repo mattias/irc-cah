@@ -22,8 +22,8 @@
     "userJoinCommands": {
         "#cah": [
             {
-                "target": "",
-                "message": ""
+                "target": "#cah",
+                "message": "Hi <%= nick %>! Type !join to play"
             }
         ]
     },
