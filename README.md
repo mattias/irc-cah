@@ -88,6 +88,9 @@ This example will send you a private message when the bot has connected to serve
 	]
 }
 ```
+###Other Configuration Settings
+* `startOnFirstJoin` - automatically start a game if someone does !join when there's no game running.
+
 ##TODO
 * Save game & player data to MongoDB for all time top scores & other statistics.
 * Config options for rule variations, such as voting the best instead of card czar choosing the winner.

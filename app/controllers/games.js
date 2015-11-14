@@ -122,7 +122,11 @@ var Games = function Games() {
             game = self.findGame(channel);
 
         if (typeof game === 'undefined') {
-            client.say(channel, 'No game running. Start the game by typing !start.');
+            if (config.startOnFirstJoin === false) {
+                client.say(channel, 'No game running. Start the game by typing !start.');
+            } else {
+                self.start(client, message, cmdArgs);
+            }
         } else {
             var player = new Player(nick, user, hostname);
             game.addPlayer(player);

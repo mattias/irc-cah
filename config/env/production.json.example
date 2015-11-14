@@ -4,6 +4,7 @@
     "setTopic":      true,
     "topicBase":     "|| This will be appended to the topic along with the game status.",
     "notifyUsers":   false,
+    "startOnFirstJoin": true,
     "pointLimit":    10,
     "connectCommands": [
         {
