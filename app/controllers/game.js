@@ -817,6 +817,9 @@ var Game = function Game(channel, client, config, cmdArgs) {
         // don't message nicks with these modes
         var exemptModes = ['~', '&'];
 
+        // don't message nicks that are already joined
+        nicks = _.omit(nicks, _.pluck(self.players, 'nick'));
+
         // loop through and send messages
         _.each(nicks, function(mode, nick) {
             if (_.indexOf(exemptModes, mode) < 0 && nick !== config.nick) {
