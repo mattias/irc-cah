@@ -34,5 +34,9 @@
         "channels":             ["#cah"],
         "floodProtection":      true,
         "floodProtectionDelay": 1000
-    }
+    },
+    "beers": [ "Blue Moon", "Pabst Blue Ribbon", "Yuengling", "Stella Artois", 
+               "Modelo", "Fat Tire Amber Ale", "Magic Hat", "Samuel Adams",
+               "Sierra Nevada", "Leffe Blonde", "Duvel", "Warsteiner", "Erdinger Weiss"
+    ]
 }

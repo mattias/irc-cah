@@ -64,7 +64,7 @@ exports.init = function () {
     client.addListener('message', function (from, to, text, message) {
         console.log('message from ' + from + ' to ' + to + ': ' + text);
         // parse command
-        var cmdArr = text.match(/^[\.|!](\w+)\s?(.*)$/);
+        var cmdArr = text.match(/^[\.|!]([^\s]+)\s?(.*)$/);
         if (!cmdArr || cmdArr.length <= 1) {
             // command not found
             return false;
@@ -73,7 +73,7 @@ exports.init = function () {
         // parse arguments
         var cmdArgs = [];
         if (cmdArr.length > 2) {
-            cmdArgs = _.map(cmdArr[2].match(/(\w+)\s?/gi), function (str) {
+            cmdArgs = _.map(cmdArr[2].match(/([^\s]+)\s?/gi), function (str) {
                 return str.trim();
             });
         }
@@ -130,5 +130,16 @@ exports.msg = function (cmd, mode, cb) {
         cmd: cmd,
         mode: mode,
         callback: cb
+    });
+};
+
+/**
+ * Add an irc event listener to the bot
+ * @param event Client event
+ * @param cb Callback function
+ */
+exports.listen = function (event, cb) {
+    client.addListener(event, function() {
+        cb(client, arguments);
     });
 };

@@ -1,5 +1,6 @@
 // import modules
 var _ = require('underscore'),
+    s = require('underscore.string'),
     Game = require('./game'),
     Player = require('../models/player'),
     config = require('../../config/config');
@@ -7,6 +8,8 @@ var _ = require('underscore'),
 var Games = function Games() {
     var self = this;
     self.games = [];
+    self.beerPending = {};
+    _.each(config.clientOptions.channels, function(channel) { self.beerPending[channel] = []});
 
     /**
      * Find a game by channel it is running on
@@ -292,6 +295,47 @@ var Games = function Games() {
             }
         }
     };
+
+    /**
+     * Send a beer
+     * @param client
+     * @param message
+     * @param cmdArgs
+     */
+    self.beer = function (client, message, cmdArgs)
+    {
+        // check if everyone has played and end the round
+        var channel = message.args[0],
+            user = message.user,
+            hostname = message.host,
+            game = self.findGame(channel),
+            nick = cmdArgs[0] || message.nick
+
+        self.beerPending[channel].push(nick);
+        client.send('NAMES', channel);
+    };
+
+    /**
+     * Handle names response to send beer
+     * @param channel
+     * @param nicks
+     */
+    self.beerHandler = function(client, arguments)
+    {
+        var channel = arguments[0],
+            nicks = arguments[1],
+            message = _.template('slides a tall, cold glass of <%= randomBeer %> over to <%= nick %>');
+        _.each(self.beerPending[channel], function (nick) {
+            if (_.indexOf(_.keys(nicks), nick) > -1) {
+                client.action(channel, message({
+                    randomBeer: config.beers[Math.floor(Math.random() * config.beers.length)],
+                    nick: nick
+                }));
+            }
+        });
+        self.beerPending[channel] = [];
+    };
+
 };
 
 exports = module.exports = Games;
