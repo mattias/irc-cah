@@ -206,7 +206,7 @@ var Game = function Game(channel, client, config, cmdArgs) {
         if(self.pointLimit > 0) {
             var winner = _.findWhere(self.players, {points: self.pointLimit});
             if(winner) {
-                self.say(winner.nick + ' has the limit of ' + self.pointLimit + ' awesome points and is the winner of the game! Congratulations!');
+                self.say(c.bold(winner.nick) + ' has reached ' + c.bold(self.pointLimit) + ' awesome points and is the winner of the game! ' + c.bold('Congratulations!'));
                 self.stop(null, true);
                 return false;
             }
@@ -220,6 +220,12 @@ var Game = function Game(channel, client, config, cmdArgs) {
             self.stopTimeout = setTimeout(self.stop, 3 * 60 * 1000);
             return false;
         }
+
+        if (self.round === 0) {
+            self.say('Players get ready! ' + _.pluck(self.players, 'nick').join(', '));
+        }
+        self.showPoints((self.round === 0) ? 'start' : 'round');
+
         self.round++;
         console.log('Starting round ', self.round);
         self.setCzar();
@@ -510,7 +516,8 @@ var Game = function Game(channel, client, config, cmdArgs) {
                 // update points object
                 _.findWhere(self.points, {player: owner}).points = owner.points;
                 // announce winner
-                self.say(c.bold('Winner is: ') + owner.nick + ' with "' + self.getFullEntry(self.table.question, winner.getCards()) + '" and gets one awesome point! ' + owner.nick + ' has ' + owner.points + ' awesome points.');
+                self.say(c.bold('The winner is: "' + self.getFullEntry(self.table.question, winner.getCards()) + '"'));
+                self.say(c.bold(owner.nick) + ' gets one awesome point! ' + owner.nick + ' has ' + c.bold(owner.points) + ' awesome points.');
                 self.clean();
                 self.nextRound();
             }
@@ -689,15 +696,22 @@ var Game = function Game(channel, client, config, cmdArgs) {
     /**
      * Show points for all players
      */
-    self.showPoints = function () {
+    self.showPoints = function (stage) {
         var sortedPlayers = _.sortBy(self.points, function (point) {
             return -point.player.points;
         });
         var output = "";
         _.each(sortedPlayers, function (point) {
-            output += point.player.nick + " " + point.points + " awesome points, ";
+            output += c.bold(point.player.nick) + ": " + c.bold(point.points) + ", ";
         });
-        self.say('The most horrible people: ' + output.slice(0, -2));
+        if (stage === 'round') {
+            self.say('Current scores: ' + output.slice(0, -2));
+            self.say('Needed to win: ' + c.bold(self.pointLimit));
+        } else if (stage === 'start') {
+            self.say('Needed to win: ' + c.bold(self.pointLimit));
+        } else {
+            self.say('The most horrible people: ' + output.slice(0, -2));
+        }
     };
 
     /**
