@@ -297,6 +297,25 @@ var Games = function Games() {
     };
 
     /**
+     * Show game help
+     * @param client
+     * @param message
+     * @param cmdArgs
+     */
+    self.help = function(client, message, cmdArgs) {
+        var channel = message.args[0],
+            help = [
+            "Commands: !start [#] - start a game of # rounds",
+            "!join, !j - join/start a game",
+            "!quit, !q - leave the game",
+            "!cards, !c - see your cards",
+            "!pick, !p [# ...] - play a card or choose a winner",
+            "other commands: !pause, !resume, !play, !winner, !beer [nick]"
+        ];
+        client.say(channel, help.join('; '));
+    };
+
+    /**
      * Send a beer
      * @param client
      * @param message

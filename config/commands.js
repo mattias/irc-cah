@@ -20,6 +20,7 @@ module.exports = function(app) {
     app.cmd('resume', '', games.resume);
     app.cmd('pick', '', games.pick);
     app.cmd('p', '', games.pick);
+    app.cmd('help', '', games.help);
     app.cmd('beer', '', games.beer);
     app.listen('names', games.beerHandler);
 };
