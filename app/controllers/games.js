@@ -310,9 +310,21 @@ var Games = function Games() {
             "!quit, !q - leave the game",
             "!cards, !c - see your cards",
             "!pick, !p [# ...] - play a card or choose a winner",
+            "!test - get a test NOTICE from the bot",
             "other commands: !pause, !resume, !play, !winner, !beer [nick]"
         ];
         client.say(channel, help.join('; '));
+    };
+
+    /**
+     * Send someone a NOTICE to help them test their client
+     * @param client
+     * @param message
+     * @param cmdArgs
+     */
+    self.test = function(client, message, cmdArgs) {
+        var nick = message.nick;
+        client.notice(nick, 'Can you hear me now?');
     };
 
     /**
