@@ -36,6 +36,23 @@ Run the bot by running `node app.js`, or if you want to run it with development 
 ##Configuration
 Main configuration files are located in `config/env`. There are two files by default for two different environments, development and production (e.g. if you want to test the bot on a separate channel). For the `clientOptions` directive, refer to the [Node-IRC documentation](https://node-irc.readthedocs.org/en/latest/API.html#client).
 
+###Configuration Settings
+* `notifyUsers` - send everyone in the channel a notice when a game is starting.
+* `startOnFirstJoin` - automatically start a game if someone does !join when there's no game running.
+* `userJoinCommands` - action to take when an irc user joins the channel, such as a greeting.
+* `voicePlayers` - give current players +v on !join. (Bot will assume it is opped.)
+* `exitOnError` - the bot dies if there is an uncaught exception. If false, notify channel and log the stack trace.
+* `maxIdleRounds` - remove the player if they failed to play during this number of rounds.
+* `timeLimit` - number of seconds allowed for playing cards and picking winners.
+
+####Set Topic
+* `topic.messages.on` - if not empty, add this message to the topic when a game starts.
+* `topic.messages.off` - if not empty, add this message to the topic when there is no game running.
+* `topic.messages.winner` - if not empty, add this message to the topic showing who won the last game.
+	* - the above three settings can take a formatting option (see: https://www.npmjs.com/package/irc-colors).
+* `topic.position` - left|right - where to place the new message relative to the current channel topic.
+* `topic.separator` - string separating the topic segments.
+
 It is possible to configure the bot to send a message to a user or channel after connecting to server or joining a specific channel using `connectCommands` and `joinCommands`. This can be used, for example, to identify with NickServ on networks that require it. See examples below.
 
 ###Cards
@@ -43,9 +60,6 @@ Card configuration is located in `config/cards` directory. Some files are includ
 
 ###Notify Users
 Users currently in the channel with the bot can be notified when a game begins by setting the `notifyUsers` directive to true. Users with ~ and & modes are not notified.
-
-###Set Topic
-The bot can be configured to set the channel topic indicating whether a game is running or not by setting the `setTopic` directive to true. The `topicBase` directive will be appended to the end of the status information. The bot must have permission in the channel for this to work.
 
 ###Point Limit
 You can set a default point limit in the configuration file by settings the `pointLimit` to any positive number. The game stops when a player reaches this point limit. 0 or a negative number means no point limit and games are played until `!stop` command is entered.
@@ -90,13 +104,6 @@ This example will send you a private message when the bot has connected to serve
 	]
 }
 ```
-###Other Configuration Settings
-* `startOnFirstJoin` - automatically start a game if someone does !join when there's no game running.
-* `userJoinCommands` - action to take when an irc user joins the channel, such as a greeting.
-* `voicePlayers` - give current players +v on !join. (Bot will assume it is opped.)
-* `exitOnError` - the bot dies if there is an uncaught exception. If false, notify channel and log the stack trace.
-* `maxIdleRounds` - remove the player if they failed to play during this number of rounds.
-* `timeLimit` - number of seconds allowed for playing cards and picking winners.
 
 ##TODO
 * Save game & player data to MongoDB for all time top scores & other statistics.

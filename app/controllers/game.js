@@ -47,6 +47,7 @@ var Game = function Game(channel, client, config, cmdArgs) {
     self.pauseState = []; // pause state storage
     self.points = [];
     self.notifyUsersPending = false;
+    self.topicPending = "";
     self.pointLimit = 0; // point limit for the game, defaults to 0 (== no limit)
 
     console.log('Loaded', config.cards.length, 'cards:');
@@ -99,6 +100,8 @@ var Game = function Game(channel, client, config, cmdArgs) {
             self.say(player.nick + ' stopped the game.');
         } else if (pointLimitReached !== true) {
             self.say('Game has been stopped.');
+            // set topic
+            self.setTopic(config.topic.messages.off);
         }
         if(self.round > 1) {
             // show points if played more than one round
@@ -129,8 +132,6 @@ var Game = function Game(channel, client, config, cmdArgs) {
         delete self.discards;
         delete self.table;
 
-        // set topic
-        self.setTopic(c.bold.yellow('No game is running. Type !start to begin one!'));
     };
 
     /**
@@ -208,6 +209,9 @@ var Game = function Game(channel, client, config, cmdArgs) {
             if(winner) {
                 self.say(c.bold(winner.nick) + ' has reached ' + c.bold(self.pointLimit) + ' awesome points and is the winner of the game! ' + c.bold('Congratulations!'));
                 self.stop(null, true);
+
+                // Add the winner to the channel topic if message is set
+                self.setTopic(config.topic.messages.winner, {nick: winner.nick});
                 return false;
             }
         }
@@ -752,25 +756,6 @@ var Game = function Game(channel, client, config, cmdArgs) {
     };
 
     /**
-     * Set the channel topic
-     */
-    self.setTopic = function (topic) {
-        // ignore if not configured to set topic
-        if (typeof config.setTopic === 'undefined' || !config.setTopic) {
-            return false;
-        }
-
-        // construct new topic
-        var newTopic = topic;
-        if (typeof config.topicBase !== 'undefined') {
-            newTopic = topic + ' ' + config.topicBase;
-        }
-
-        // set it
-        client.send('TOPIC', channel, newTopic);
-    };
-
-    /**
      * List all players in the current game
      */
     self.listPlayers = function () {
@@ -846,6 +831,83 @@ var Game = function Game(channel, client, config, cmdArgs) {
     };
 
     /**
+     * Set the channel topic
+     * @param topic
+     * @param data
+     */
+    self.setTopic = function (topic, data) {
+        var message, format;
+
+        console.log('Called setTopic: ', topic, data);
+
+        if (typeof topic === "string") {
+            message = topic;
+        } else {
+            message = topic[0];
+            format = topic[1];
+        }
+        if (data) {
+            message = _.template(message)(data);
+        }
+        if (format) {
+            try {
+                // apply string formatting to message
+                message = eval("c." + format)(message);
+            } catch (error) {
+                self.log("format: " + error);
+                return false;
+            }
+        }
+
+        if (message == "") { return false; }
+
+        // set up handler
+        self.topicPending = message;
+
+        // trigger handler
+        client.send('TOPIC', channel);
+    };
+
+    /**
+     * Handle TOPIC response and set topic
+     * @param channel
+     * @param topic
+     * @param nick
+     * @param message
+     */
+    self.topicHandler = function (channel, topic, nick, message) {
+        var i, newTopic,
+            keep = topic,
+            addTopic = self.topicPending,
+            sep = config.topic.separator;
+
+        if (addTopic === "") { return false; }
+
+        console.log('Called topicHandler');
+
+        if (config.topic.separator) {
+            if (config.topic.position === "left") {
+                // prepend the new topic item
+                i = topic.indexOf(sep);
+                (i > -1)    ?    keep = topic.slice(i + 1)    :    sep += ' ';
+                newTopic = [addTopic, keep].join(" " + sep);
+            } else if (config.topic.position === "right") {
+                // append the new topic item
+                i = topic.lastIndexOf(sep);
+                (i > -1)    ?    keep = topic.slice(0, i)    :    sep = ' ' + sep;
+                newTopic = [keep, addTopic].join(sep + " ");
+            }
+        } else {
+            newTopic = addTopic;
+        }
+
+        self.topicPending = "";
+        if (newTopic !== topic) {
+            client.send('TOPIC', channel, newTopic);
+        }
+    };
+
+    /**
      * Public message to the game channel
      * @param string
      */
@@ -862,7 +924,7 @@ var Game = function Game(channel, client, config, cmdArgs) {
     };
 
     // set topic
-    self.setTopic(c.bold.lime('A game is running. Type !join to get in on it!'));
+    self.setTopic(config.topic.messages.on);
 
     // announce the game on the channel
     self.say('A new game of ' + c.rainbow('Cards Against Humanity') + '. The game starts in 30 seconds. Type !join to join the game any time.');
@@ -881,6 +943,7 @@ var Game = function Game(channel, client, config, cmdArgs) {
     client.addListener('quit', self.playerLeaveHandler);
     client.addListener('nick', self.playerNickChangeHandler);
     client.addListener('names'+channel, self.notifyUsersHandler);
+    client.addListener('topic', self.topicHandler);
 };
 
 // export static state constant
