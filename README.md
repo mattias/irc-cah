@@ -96,6 +96,7 @@ This example will send you a private message when the bot has connected to serve
 * `voicePlayers` - give current players +v on !join. (Bot will assume it is opped.)
 * `exitOnError` - the bot dies if there is an uncaught exception. If false, notify channel and log the stack trace.
 * `maxIdleRounds` - remove the player if they failed to play during this number of rounds.
+* `timeLimit` - number of seconds allowed for playing cards and picking winners.
 
 ##TODO
 * Save game & player data to MongoDB for all time top scores & other statistics.

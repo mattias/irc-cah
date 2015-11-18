@@ -396,7 +396,7 @@ var Game = function Game(channel, client, config, cmdArgs) {
     self.turnTimerCheck = function () {
         // check the time
         var now = new Date();
-        var timeLimit = 3 * 60 * 1000;
+        var timeLimit = config.timeLimit * 1000;
         var roundElapsed = (now.getTime() - self.roundStarted.getTime());
         console.log('Round elapsed:', roundElapsed, now.getTime(), self.roundStarted.getTime());
         if (roundElapsed >= timeLimit) {
@@ -466,7 +466,7 @@ var Game = function Game(channel, client, config, cmdArgs) {
     self.winnerTimerCheck = function () {
         // check the time
         var now = new Date();
-        var timeLimit = 2 * 60 * 1000;
+        var timeLimit = config.timeLimit * 1000;
         var roundElapsed = (now.getTime() - self.roundStarted.getTime());
         console.log('Winner selection elapsed:', roundElapsed, now.getTime(), self.roundStarted.getTime());
         if (roundElapsed >= timeLimit) {

@@ -6,6 +6,7 @@
     "notifyUsers":   false,
     "startOnFirstJoin": true,
     "maxIdleRounds": 2,
+    "timeLimit": 120,
     "voicePlayers": false,
     "pointLimit":    10,
     "exitOnError": false,
