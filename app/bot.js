@@ -103,6 +103,18 @@ exports.init = function () {
             }, this);
         }
     });
+
+    // don't die on uncaught errors
+    if (typeof config.exitOnError !== "undefined" && config.exitOnError === false) {
+        process.on('uncaughtException', function (err) {
+            console.log('Caught exception: ' + err);
+            console.log(err.stack);
+            _.each(config.clientOptions.channels, function(channel) {
+                client.say(channel, "WARNING: The bot has generated an unhandled error. Quirks may ensue.")
+            });
+        });
+    }
+
 };
 
 /**
