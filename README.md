@@ -3,20 +3,21 @@
 IRC bot that let's you play [Cards Against Humanity](http://www.cardsagainsthumanity.com/) in IRC. The game is running in IRCnet on #cah, but you can just as easily run your own instance on your own channel for more private games.
 
 ##Commands
+(as **!command** or **.command**)
 * **!start #** - Start a new game. Optional parameter can by used to set a point limit for the game (e.g. `!start 10` to play until one player has 10 points.)
 * **!help** - Show game instructions.
 * **!stop** - Stop the currently running game.
 * **!pause** - Pause the currently running game.
 * **!resume** - Resume a paused game.
-* **!join** - Join to the currently running game. (Alias !j)
-* **!quit** - Quit from the game. (Alias !q)
-* **!cards** - Show the cards you have in your hand. (Alias !c)
-* **!play # (#)** - Play a card from your hand, # being the number of the card in the list. Play as many numbers separated by spaces as the current card required.
-* **!winner #** - Pick a winner of the round, # being the number of the entry in the list. Only for the current *card czar*. (Alias !w)
+* **!join !j** - Join to the currently running game.
+* **!quit !q** - Quit from the game.
+* **!cards !c** - Show the cards you have in your hand.
+* **!play # [#...]** - Play a card from your hand, # being the number of the card in the list. Play as many numbers separated by spaces as the current card required.
+* **!winner !w #** - Pick a winner of the round, # being the number of the entry in the list. Only for the current *card czar*.
 * **!points** - Show players' *awesome points* in the current game.
 * **!list** - List players in the current game.
 * **!status** - Show current status of the game. Output depends on the state of the game (e.g. when waiting for players to play, you can check who hasn't played yet)
-* **!pick** - Alias for !play and !winner commands. (Alias !p)
+* **!pick !p # [#...]** - Alias for !play and !winner commands.
 * **!beer [nick]** - Order a beer for yourself or someone else.
 
 Some of these commands reply as notice. If you use [Irssi](http://www.irssi.org), you can use [active_notice.pl](http://scripts.irssi.org/scripts/active_notice.pl) to get notices on the active window instead of status window.
@@ -34,76 +35,149 @@ Some of these commands reply as notice. If you use [Irssi](http://www.irssi.org)
 Run the bot by running `node app.js`, or if you want to run it with development settings instead of production, run `NODE_ENV=development node app.js`.
 
 ##Configuration
-Main configuration files are located in `config/env`. There are two files by default for two different environments, development and production (e.g. if you want to test the bot on a separate channel). For the `clientOptions` directive, refer to the [Node-IRC documentation](https://node-irc.readthedocs.org/en/latest/API.html#client).
+Main configuration files are located in `config/env`. There are two files by default for two different environments, development and production (e.g. if you want to test the bot on a separate channel).
 
 ###Configuration Settings
-* `notifyUsers` - send everyone in the channel a notice when a game is starting.
-* `startOnFirstJoin` - automatically start a game if someone does !join when there's no game running.
-* `userJoinCommands` - action to take when an irc user joins the channel, such as a greeting.
-* `voicePlayers` - give current players +v on !join. (Bot will assume it is opped.)
-* `exitOnError` - the bot dies if there is an uncaught exception. If false, notify channel and log the stack trace.
-* `maxIdleRounds` - remove the player if they failed to play during this number of rounds.
-* `timeLimit` - number of seconds allowed for playing cards and picking winners.
+**Note:** if you're copy/pasting - comments are not allowed in JSON files.
+```JavaScript
+{
+    "server": "irc.saunalahti.fi",  // - Server to connect to.
+    "nick": "cah-dev",              // - The bot's nickname.
 
-####Set Topic
-* `topic.messages.on` - if not empty, add this message to the topic when a game starts.
-* `topic.messages.off` - if not empty, add this message to the topic when there is no game running.
-* `topic.messages.winner` - if not empty, add this message to the topic showing who won the last game.
-	* - the above three settings can take a formatting option (see: https://www.npmjs.com/package/irc-colors).
-* `topic.position` - left|right - where to place the new message relative to the current channel topic.
-* `topic.separator` - string separating the topic segments.
+    "notifyUsers": true,
 
-It is possible to configure the bot to send a message to a user or channel after connecting to server or joining a specific channel using `connectCommands` and `joinCommands`. This can be used, for example, to identify with NickServ on networks that require it. See examples below.
+    // ^ Send a notice to everyone in the channel when a game is starting?
+    //   Users with ~ and & modes are not notified.
+
+    "startOnFirstJoin": true,       // - When no game is running, treat the first !join as !start?
+
+    "maxIdleRounds": 2,             // - Number of inactive game rounds causing a player to be removed.
+
+    "timeLimit": 120,               // - Seconds to allow for playing cards or picking winners.
+    
+    "voicePlayers": false,          // - Give current players +v on join? (Bot will assume it is opped.)
+    
+    "pointLimit": 10,
+
+    // ^ Default number of points needed to win the game. (!start # to override.)
+    //   0 or a negative number means the game continues until `!stop` command is issued.
+    
+    "exitOnError": false,
+
+    // ^ Allow the bot process to crash when there is an uncaught exception?
+    //   Otherwise, notify channel and log the stack trace.
+
+    "topic": {
+
+    // The bot can add/update a segment of the channel topic when games start and end.
+
+        "position": "right",        // - Where to place the new segment relative to the main topic.
+
+        "separator": "::",          // - String separating the topic segments.
+
+        "messages": {               // - Set any of these to an empty string to disable.
+
+            "on":  ["A game is running. Type !join to get in on it!", "bold.yellow"],
+
+            // ^ Set when a game starts.
+            //   A message can be a list containing a string, and an optional formatting instruction.
+```
+
+For formatting options, see the [IRC-Colors](https://www.npmjs.com/package/irc-colors) module.
+
+```JavaScript
+            "off": "",
+
+            // ^ Set when a game ends. If 'winner' is set, this should probably be empty.
+
+            "winner": "Reigning champion: <%= nick %>"
+
+            // ^ When the game ends, glorify the winner.
+            //   A message can be just a string.
+            //  'nick' is a valid template tag inside the "winner" message.
+        }
+    }
+
+    "connectCommands": [
+
+    // ^ Sent after connecting to server: for example, to identify with nickserv, as below.
+
+        {
+            "target": "nickserv",
+            "message": "identify cah-dev mypassword"
+        }
+    ],
+
+    "joinCommands": {
+        "#pi-cah-dev": [
+
+        // ^ Sent after joining this channel.
+
+            {
+                "target": "#pi-cah-dev",
+                "message": "Hello guys"
+            },
+    		{
+    			"target": "yournick",
+    			"message": "I just joined #pi-cah-dev."
+    		}
+        ]
+    },
+
+    "userJoinCommands": {
+        "#pi-cah-dev": [
+
+        // ^ Sent after someone else joins this channel.
+        //   'nick' and 'channel' are valid template tags in userJoinCommands messages.
+
+            {
+                "target": "#pi-cah-dev",
+                "message": "Hi <%= nick %>! Type !join to play"
+            }
+        ]
+    },
+```
+
+For the `clientOptions` directive, refer to the [Node-IRC documentation](https://node-irc.readthedocs.org/en/latest/API.html#client).
+
+```JavaScript
+    "clientOptions": {
+
+    // General IRC-related settings.
+
+        "userName": "cah",
+        "debug": true,
+        "channels": ["#pi-cah-dev"],
+        "floodProtection": true,
+        "floodProtectionDelay": 2000
+    },
+
+    // When the !beer command is issued, a random beer is selected from this list.
+    "beers": [ "Blue Moon", "Pabst Blue Ribbon", "Yuengling", "Stella Artois", 
+               "Modelo", "Fat Tire Amber Ale", "Magic Hat", "Samuel Adams",
+               "Sierra Nevada", "Leffe Blonde", "Duvel", "Warsteiner", "Erdinger Weiss"
+    ]
+
+}
+```
+
+###SASL and SSL
+If you would rather identify to the server directly instead of msging nickserv, you can use SASL:
+
+```JavaScript
+    "clientOptions": {
+        ...
+        "sasl": true,               // - Enable SASL?
+        "secure": true,             // - Enable SSL encryption?
+        "selfSigned": true,         // - If SSL, allow unverified server certificates?
+        "port": 6697,               // - The SSL port your server listens on.
+        "userName": "cah",          // - The account name to identify as.
+        "password": "mypassword"    // - The account password.
+    }
+```
 
 ###Cards
 Card configuration is located in `config/cards` directory. Some files are included by default, that contain the default cards of the game plus some extra cards from [BoardGameGeek](http://boardgamegeek.com/). You can add your custom cards to `Custom_a.json` (for answers) and `Custom_q.json` (for questions), using the same format as the default card files. Any card you add to these files will also be automatically loaded to the game during start up..
-
-###Notify Users
-Users currently in the channel with the bot can be notified when a game begins by setting the `notifyUsers` directive to true. Users with ~ and & modes are not notified.
-
-###Point Limit
-You can set a default point limit in the configuration file by settings the `pointLimit` to any positive number. The game stops when a player reaches this point limit. 0 or a negative number means no point limit and games are played until `!stop` command is entered.
-
-Additionally point limit can be set on a per game basis as a parameter for the `!start` command (see *Commands*).
-
-###Connect and join command examples
-
-####NickServer
-To identify with NickServ after connecting, you can use the following ´connectCommands´:
-
-```JavaScript
-"connectCommands": [
-    {
-        "target": "nickserv",
-        "message": "identify <password>"
-    }
-]
-```
-
-####Notify after connecting and joining #awesomechannel
-
-This example will send you a private message when the bot has connected to server and another private message when it has joined #awesomechannel. The bot will also send a message to #awesomechannel saying that it's back and ready to play.
-
-```JavaScript
-"connectCommands": [
-    {
-        "target": "yournick",
-        "message": "Connected to server."
-    }
-],
-"joinCommands": {
-	"#awesomechannel": [
-		{
-			"target": "#awesomechannel",
-			"message" "I'm back, let's play!"
-		},
-		{
-			"target": "yournick",
-			"message": "I just joined #awesomechannel."
-		}
-	]
-}
-```
 
 ##TODO
 * Save game & player data to MongoDB for all time top scores & other statistics.
