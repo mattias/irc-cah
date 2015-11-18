@@ -533,7 +533,7 @@ var Game = function Game(channel, client, config, cmdArgs) {
     self.getFullEntry = function (question, answers) {
         var args = [question.value];
         _.each(answers, function (card) {
-            args.push(card.value);
+            args.push(c.bold(card.value));
         }, this);
         return util.format.apply(this, args);
     };
