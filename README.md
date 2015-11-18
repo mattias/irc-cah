@@ -4,18 +4,19 @@ IRC bot that let's you play [Cards Against Humanity](http://www.cardsagainsthuma
 
 ##Commands
 * **!start #** - Start a new game. Optional parameter can by used to set a point limit for the game (e.g. `!start 10` to play until one player has 10 points.)
+* **!help** - Show game instructions.
 * **!stop** - Stop the currently running game.
 * **!pause** - Pause the currently running game.
 * **!resume** - Resume a paused game.
-* **!join** - Join to the currently running game.
-* **!quit** - Quit from the game.
-* **!cards** - Show the cards you have in your hand.
+* **!join** - Join to the currently running game. (Alias !j)
+* **!quit** - Quit from the game. (Alias !q)
+* **!cards** - Show the cards you have in your hand. (Alias !c)
 * **!play # (#)** - Play a card from your hand, # being the number of the card in the list. Play as many numbers separated by spaces as the current card required.
-* **!winner #** - Pick a winner of the round, # being the number of the entry in the list. Only for the current *card czar*.
+* **!winner #** - Pick a winner of the round, # being the number of the entry in the list. Only for the current *card czar*. (Alias !w)
 * **!points** - Show players' *awesome points* in the current game.
 * **!list** - List players in the current game.
 * **!status** - Show current status of the game. Output depends on the state of the game (e.g. when waiting for players to play, you can check who hasn't played yet)
-* **!pick** - Alias for !play and !winner commands.
+* **!pick** - Alias for !play and !winner commands. (Alias !p)
 * **!beer [nick]** - Order a beer for yourself or someone else.
 
 Some of these commands reply as notice. If you use [Irssi](http://www.irssi.org), you can use [active_notice.pl](http://scripts.irssi.org/scripts/active_notice.pl) to get notices on the active window instead of status window.
@@ -93,6 +94,7 @@ This example will send you a private message when the bot has connected to serve
 * `startOnFirstJoin` - automatically start a game if someone does !join when there's no game running.
 * `userJoinCommands` - action to take when an irc user joins the channel, such as a greeting.
 * `voicePlayers` - give current players +v on !join. (Bot will assume it is opped.)
+* `exitOnError` - the bot dies if there is an uncaught exception. If false, notify channel and log the stack trace.
 
 ##TODO
 * Save game & player data to MongoDB for all time top scores & other statistics.
