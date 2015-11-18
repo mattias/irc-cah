@@ -5,6 +5,7 @@
     "topicBase":     "|| This will be appended to the topic along with the game status.",
     "notifyUsers":   false,
     "startOnFirstJoin": true,
+    "maxIdleRounds": 2,
     "voicePlayers": false,
     "pointLimit":    10,
     "exitOnError": false,

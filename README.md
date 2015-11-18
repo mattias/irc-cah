@@ -95,6 +95,7 @@ This example will send you a private message when the bot has connected to serve
 * `userJoinCommands` - action to take when an irc user joins the channel, such as a greeting.
 * `voicePlayers` - give current players +v on !join. (Bot will assume it is opped.)
 * `exitOnError` - the bot dies if there is an uncaught exception. If false, notify channel and log the stack trace.
+* `maxIdleRounds` - remove the player if they failed to play during this number of rounds.
 
 ##TODO
 * Save game & player data to MongoDB for all time top scores & other statistics.

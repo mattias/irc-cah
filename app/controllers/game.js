@@ -292,8 +292,8 @@ var Game = function Game(channel, client, config, cmdArgs) {
         _.each(self.players, function (player) {
             player.hasPlayed = false;
             player.isCzar = false;
-            // check inactive count & remove after 3
-            if (player.inactiveRounds >= 3) {
+            // check inactive count & remove after threshold
+            if (player.inactiveRounds >= config.maxIdleRounds) {
                 self.removePlayer(player, {silent: true});
                 removedNicks.push(player.nick);
             }
