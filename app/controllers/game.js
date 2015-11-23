@@ -763,16 +763,50 @@ var Game = function Game(channel, client, config, cmdArgs) {
     };
 
     /**
+     * Handle player parts
+     * @param channel
+     * @param nick
+     * @param reason
+     * @param message
+     */
+    self.playerPartHandler = function (channel, nick, reason, message) {
+        self.playerLeaveHandler(nick);
+    };
+
+    /**
+     * Handle player quits
+     * @param nick
+     * @param reason
+     * @param channels
+     * @param message
+     */
+    self.playerQuitHandler = function (nick, reason, channels, message) {
+        self.playerLeaveHandler(nick);
+    };
+
+    /**
+     * Handle player kicks
+     * @param channel
+     * @param nick
+     * @param by
+     * @param reason
+     * @param message
+     */
+    self.playerKickHandler = function (channel, nick, by, reason, message) {
+        self.playerLeaveHandler(nick);
+    };
+
+    /**
      * Handle player quits and parts
      * @param channel
      * @param nick
      * @param reason
      * @param message
      */
-    self.playerLeaveHandler = function (channel, nick, reason, message) {
-        console.log('Player ' + nick + ' left');
+    self.playerLeaveHandler = function (nick) {
         var player = self.getPlayer({nick: nick});
         if (typeof player !== 'undefined') {
+            console.log('Player ' + nick + ' left');
             self.removePlayer(player);
         }
     };
@@ -939,8 +973,9 @@ var Game = function Game(channel, client, config, cmdArgs) {
     self.startTimeout = setTimeout(self.nextRound, 30000);
 
     // client listeners
-    client.addListener('part', self.playerLeaveHandler);
-    client.addListener('quit', self.playerLeaveHandler);
+    client.addListener('part', self.playerPartHandler);
+    client.addListener('quit', self.playerQuitHandler);
+    client.addListener('kick', self.playerKickHandler);
     client.addListener('nick', self.playerNickChangeHandler);
     client.addListener('names'+channel, self.notifyUsersHandler);
     client.addListener('topic', self.topicHandler);
