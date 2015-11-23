@@ -629,7 +629,7 @@ var Game = function Game(channel, client, config, cmdArgs) {
     self.removePlayer = function (player, options) {
         options = _.extend({}, options);
         if (typeof player !== 'undefined') {
-            console.log('removing' + player.nick + ' from the game');
+            console.log('removing ' + player.nick + ' from the game');
             // get cards in hand
             var cards = player.cards.reset();
             // remove player
@@ -655,6 +655,10 @@ var Game = function Game(channel, client, config, cmdArgs) {
             if (self.state === STATES.PLAYED && self.czar === player) {
                 self.say('The czar has fled the scene. So I will pick the winner on this round.');
                 self.selectWinner(Math.round(Math.random() * (self.table.answer.length - 1)));
+            }
+
+            if (self.players.length === 0 && config.stopOnLastPlayerLeave === true) {
+                self.stop();
             }
 
             return player;

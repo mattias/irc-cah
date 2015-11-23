@@ -67,6 +67,8 @@ Main configuration files are located in `config/env`. There are two files by def
     // ^ Allow the bot process to crash when there is an uncaught exception?
     //   Otherwise, notify channel and log the stack trace.
 
+    "stopOnLastPlayerLeave": false,   // - Stop the game if there are no more players (playing or waiting).
+
     "topic": {
 
     // The bot can add/update a segment of the channel topic when games start and end.

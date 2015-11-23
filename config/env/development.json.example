@@ -8,6 +8,7 @@
     "voicePlayers": false,
     "pointLimit": 1,
     "exitOnError": false,
+    "stopOnLastPlayerLeave": false,
     "topic": {
         "position": "right",
         "separator": "::",
