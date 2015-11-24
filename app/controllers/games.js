@@ -146,6 +146,28 @@ var Games = function Games() {
     };
 
     /**
+     * Remove a player
+     * @param client
+     * @param message
+     * @param cmdArgs
+     */
+    self.remove = function (client, message, cmdArgs) {
+        var channel = message.args[0],
+            game = self.findGame(channel),
+            target = cmdArgs[0];
+        if (typeof game === 'undefined') {
+            client.say(channel, 'No game running. Start the game by typing !start.');
+        } else {
+            var player = game.getPlayer({nick: target});
+            if (typeof(player) === 'undefined') {
+                client.say(channel, target + ' is not currently playing.');
+            } else {
+                game.removePlayer(player);
+            }
+        }
+    };
+
+    /**
      * Get players cards
      * @param client
      * @param message
@@ -302,7 +324,7 @@ var Games = function Games() {
             "!cards, !c - see your cards",
             "!pick, !p [# ...] - play a card or choose a winner",
             "!test - get a test NOTICE from the bot",
-            "other commands: !play, !winner !w, !beer [nick], !pause, !resume, !stop"
+            "other commands: !play, !winner !w, !beer [nick], !pause, !resume, !stop, !remove <nick>"
         ];
         client.say(channel, help.join('; '));
     };

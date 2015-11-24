@@ -8,6 +8,8 @@ module.exports = function(app) {
     app.cmd('j', '', games.join);
     app.cmd('quit', '', games.quit);
     app.cmd('q', '', games.quit);
+    app.cmd('remove', 'o', games.remove);
+    app.cmd('r', 'o', games.remove);
     app.cmd('cards', '', games.cards);
     app.cmd('c', '', games.cards);
     app.cmd('play', '', games.play);

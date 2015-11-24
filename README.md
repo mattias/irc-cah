@@ -12,6 +12,7 @@ Commands marked (ops) require +o by default - edit config/commands.js to change 
 * **!resume** - Resume a paused game. (ops)
 * **!join !j** - Join to the currently running game.
 * **!quit !q** - Quit from the game.
+* **!remove !r <nick>** - Remove a player from the game. (ops)
 * **!cards !c** - Show the cards you have in your hand.
 * **!play # [#...]** - Play a card from your hand, # being the number of the card in the list. Play as many numbers separated by spaces as the current card required.
 * **!winner !w #** - Pick a winner of the round, # being the number of the entry in the list. Only for the current *card czar*.
