@@ -48,6 +48,8 @@ var cardFiles = {
     Official2ndExpansionAmericaQuestions: __dirname + '/../config/cards/Official2ndExpansionAmerica_q.json',
     Official3rdExpansionQuestions: __dirname + '/../config/cards/Official3rdExpansion_q.json',
     Official3rdExpansionAmericaQuestions: __dirname + '/../config/cards/Official3rdExpansionAmerica_q.json',
+    Official4thExpansionQuestions: __dirname + '/../config/cards/Official4thExpansion_questions.json',
+    Official4thExpansionAnswers: __dirname + '/../config/cards/Official4thExpansion_answers.json',
     OfficialCanadianExpansionQuestions: __dirname + '/../config/cards/OfficialCanadianExpansion_q.json',
     OfficialChristmasExpansionQuestions: __dirname + '/../config/cards/OfficialChristmasExpansion_q.json',
     BGGQuestions: __dirname + '/../config/cards/BGG_q.json',
