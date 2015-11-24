@@ -74,6 +74,15 @@ exports.init = function () {
         }
     });
 
+    // accept invites for known channels
+    client.addListener('invite', function(channel, from, message) {
+        if (_.contains(config.clientOptions.channels, channel) && ! _.contains(_.keys(client.chans, channel))) {
+            client.send('JOIN', channel);
+            client.say(from, 'Attempting to join ' + channel);
+            console.log('Attempting to join ' + channel + ' : invited by ' + from);
+        }
+    });
+
     // output errors
     client.addListener('error', function (message) {
         console.warn('IRC client error: ', message);
