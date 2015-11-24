@@ -4,11 +4,12 @@ IRC bot that let's you play [Cards Against Humanity](http://www.cardsagainsthuma
 
 ##Commands
 (as **!command** or **.command**)
+Commands marked (ops) require +o by default - edit config/commands.js to change this.
 * **!start #** - Start a new game. Optional parameter can by used to set a point limit for the game (e.g. `!start 10` to play until one player has 10 points.)
 * **!help** - Show game instructions.
-* **!stop** - Stop the currently running game.
-* **!pause** - Pause the currently running game.
-* **!resume** - Resume a paused game.
+* **!stop** - Stop the currently running game. (ops)
+* **!pause** - Pause the currently running game. (ops)
+* **!resume** - Resume a paused game. (ops)
 * **!join !j** - Join to the currently running game.
 * **!quit !q** - Quit from the game.
 * **!cards !c** - Show the cards you have in your hand.

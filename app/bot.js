@@ -5,14 +5,12 @@ var _ = require('underscore'),
     commands = [],
     msgs = [];
 
-function checkUserMode(message, mode) {
-    return true;
-}
-
 /**
  * Initialize the bot
  */
 exports.init = function () {
+    var self = this;
+
     console.log('Initializing...');
     // init irc client
     console.log('Connecting to ' + config.server + ' as ' + config.nick + '...');
@@ -82,27 +80,50 @@ exports.init = function () {
         if (config.clientOptions.channels.indexOf(to) >= 0) {
             // public commands
             _.each(commands, function (c) {
+                callback = function() { c.callback(client, message, cmdArgs); };
                 if (cmd === c.cmd) {
                     console.log('command: ' + c.cmd);
-                    // check user mode
-                    if (checkUserMode(message, c.mode)) {
-                        c.callback(client, message, cmdArgs);
-                    }
+                    // check user mode and execute callback
+                    self.withUserModeLevel(message.nick, to, c.mode, callback);
                 }
             }, this);
         } else if (config.nick === to) {
             // private message commands
             _.each(msgs, function (c) {
+                callback = function() { c.callback(client, message, cmdArgs); };
                 if (cmd === c.cmd) {
                     console.log('command: ' + c.cmd);
-                    // check user mode
-                    if (checkUserMode(message, c.mode)) {
-                        c.callback(client, message, cmdArgs);
-                    }
+                    // check user mode and execute callback
+                    //self.withUserModeLevel(message.nick, c.mode, callback);
                 }
             }, this);
         }
     });
+
+    self.withUserModeLevel = function(nick, channel, mode, callback) {
+        // node-irc lists user modes as hierarchical, so treat ops as voiced ops
+        var allowedModes = {
+            'o': ['@'],
+            'v': ['+', '@'],
+            '':  ['', '+', '@']
+        };
+        var checkMode = allowedModes[mode];
+        if (typeof checkMode === 'undefined') {
+            console.log('Invalid mode to check: ' + mode);
+            return false;
+        }
+        var callbackWrapper = function(channel, nicks) {
+            client.removeListener('names', callbackWrapper);
+            // check if the found mode is one of the ones we're checking ('@' matches '@' or '+')
+            var hasModeLevel = ( _.has(nicks, nick) && _.contains(checkMode, nicks[nick]) );
+            if (hasModeLevel) {
+                console.log('User ' + nick + ' has mode "' + mode + '" : executing callback ');
+                callback.apply(this, arguments);
+            }
+        };
+        client.addListener('names', callbackWrapper);
+        client.send('NAMES', channel);
+    }
 
     // don't die on uncaught errors
     if (typeof config.exitOnError !== "undefined" && config.exitOnError === false) {

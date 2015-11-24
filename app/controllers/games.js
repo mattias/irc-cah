@@ -59,11 +59,8 @@ var Games = function Games() {
         if (typeof game === 'undefined') {
             client.say(channel, 'No game running. Start the game by typing !start.');
         } else {
-            var player = game.getPlayer({user: user, hostname: hostname});
-            if (typeof(player) !== 'undefined') {
-                game.stop(game.getPlayer({user: user, hostname: hostname}));
-                self.games = _.without(self.games, game);
-            }
+            game.stop(game.getPlayer({user: user, hostname: hostname}));
+            self.games = _.without(self.games, game);
         }
     };
 
@@ -82,10 +79,7 @@ var Games = function Games() {
         if (typeof game === 'undefined') {
             client.say(channel, 'No game running. Start the game by typing !start.');
         } else {
-            var player = game.getPlayer({user: user, hostname: hostname});
-            if (typeof(player) !== 'undefined') {
-                game.pause();
-            }
+            game.pause();
         }
      };
 
@@ -104,10 +98,7 @@ var Games = function Games() {
         if (typeof game === 'undefined') {
             client.say(channel, 'No game running. Start the game by typing !start.');
         } else {
-            var player = game.getPlayer({user: user, hostname: hostname});
-            if (typeof(player) !== 'undefined') {
-                game.resume();
-            }
+            game.resume();
         }
      };
 
@@ -311,7 +302,7 @@ var Games = function Games() {
             "!cards, !c - see your cards",
             "!pick, !p [# ...] - play a card or choose a winner",
             "!test - get a test NOTICE from the bot",
-            "other commands: !pause, !resume, !play, !winner, !beer [nick]"
+            "other commands: !play, !winner !w, !beer [nick], !pause, !resume, !stop"
         ];
         client.say(channel, help.join('; '));
     };
