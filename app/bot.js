@@ -27,10 +27,30 @@ exports.init = function () {
                 }
             });
         }
+        if (config.voicePlayers === true) {
+            // create an event handler for each channel to devoice nicks when the bot joins
+            _.each(config.clientOptions.channels, function(joinedChannel) {
+                var devoiceOnJoin = function(nicks) {
+                    client.removeListener('names' + joinedChannel, devoiceOnJoin);
+                    // get voiced nicks
+                    nicks = _.keys( _.pick(nicks, function(nick) { return ( nick === '+' ) }) );
+                    var timeout = setInterval(function() {
+                        var i, j;
+                        for (i=0, j=nicks.length; i<j; i+=4) {
+                            var args = ['MODE', joinedChannel, '-vvvv'].concat(nicks.slice(i, i+4));
+                            client.send.apply(this, args);
+                        }
+                        clearInterval(timeout);
+                    }, 2000);
+                };
+                client.addListener('names' + joinedChannel, devoiceOnJoin);
+            });
+        }
     });
 
     // handle joins to channels for logging
     client.addListener('join', function (channel, nick, message) {
+        client.send('NAMES', channel);
         // Send join command after joining a channel
         if (config.nick === nick) {
             console.log('Joined ' + channel + ' as ' + nick);
