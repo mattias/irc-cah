@@ -91,12 +91,12 @@ exports.init = function () {
     client.addListener('message', function (from, to, text, message) {
         console.log('message from ' + from + ' to ' + to + ': ' + text);
         // parse command
-        var cmdArr = text.match(/^[\.|!]([^\s]+)\s?(.*)$/);
+        var cmdArr = text.trim().match(/^[\.|!]([^\s]+)\s?(.*)$/i);
         if (!cmdArr || cmdArr.length <= 1) {
             // command not found
             return false;
         }
-        var cmd = cmdArr[1];
+        var cmd = cmdArr[1].toLowerCase();
         // parse arguments
         var cmdArgs = [];
         if (cmdArr.length > 2) {
