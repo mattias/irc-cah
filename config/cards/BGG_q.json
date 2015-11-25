@@ -297,7 +297,7 @@
   },
   {
     "type": "Question",
-    "value": "And then little Billy woke up the next morning, he discovered that the tooth fairy had left %s under his pillow.",
+    "value": "And when little Billy woke up the next morning, he discovered that the tooth fairy had left %s under his pillow.",
     "keep": "Yes",
     "draw": 0,
     "pick": 1,
