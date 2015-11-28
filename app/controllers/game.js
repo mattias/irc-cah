@@ -518,7 +518,8 @@ var Game = function Game(channel, client, config, cmdArgs) {
                 var owner = winner.cards[0].owner;
                 owner.points++;
                 // update points object
-                _.findWhere(self.points, {player: owner}).points = owner.points;
+                var playerPoints = _.findWhere(self.points, {player: owner});
+                if (playerPoints) { playerPoints.points = owner.points; } // player may have quit
                 // announce winner
                 self.say(c.bold('The winner is: "' + self.getFullEntry(self.table.question, winner.getCards()) + '"'));
                 var message = _.template('<%= nick %> gets one awesome point! <%= nick %> has <%= points %> awesome point<%= s %>.');
