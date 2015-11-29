@@ -31,14 +31,20 @@ var Games = function Games() {
         var channel = message.args[0],
             nick = message.nick,
             user = message.user,
-            hostname = message.host;
+            hostname = message.host,
+            game;
 
-        if (typeof self.findGame(channel) !== 'undefined') {
+        game = self.findGame(channel);
+        if (typeof game !== 'undefined') {
             // game exists
-            client.say(channel, 'A game is already running. Type !join to join the game.');
+            if (game.getPlayer({nick: nick})) {
+                client.say(channel, 'You are already in the current game.');
+            } else {
+                client.say(channel, 'A game is already running. Type !join to join the game.');
+            }
         } else {
             // init game
-            var game = new Game(channel, client, config, cmdArgs);
+            game = new Game(channel, client, config, cmdArgs);
             self.games.push(game);
             self.join(client, message, cmdArgs)
         }
