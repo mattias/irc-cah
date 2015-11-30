@@ -2,7 +2,7 @@ var util = require('util'),
     c = require('irc-colors'),
     _ = require('underscore'),
     Cards = require('../controllers/cards'),
-    Card = require('../models/card');
+    Card = require('../models/card'),
     p; // default prefix char from config
 
 /**

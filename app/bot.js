@@ -95,8 +95,8 @@ exports.init = function () {
         var escape = ['-', '^'];
         var prefix = _.map(config.commandPrefixChars.split(''), function(char) {
             return (_.contains(escape, char)) ? "\\" + char : char;
-        }).join('|');
-        var cmdPattern = new RegExp('^[' + prefix + ']([^\s]+)\s?(.*)$', 'i');
+        }).join('');
+        var cmdPattern = new RegExp('^[' + prefix + ']([^\\s]+)\\s?(.*)$', 'i');
         var cmdArr = text.trim().match(cmdPattern);
         if (!cmdArr || cmdArr.length <= 1) {
             // command not found
