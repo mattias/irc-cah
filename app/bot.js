@@ -53,7 +53,7 @@ exports.init = function () {
     client.addListener('join', function (channel, nick, message) {
         client.send('NAMES', channel);
         // Send join command after joining a channel
-        if (config.nick === nick) {
+        if (client.nick === nick) {
             console.log('Joined ' + channel + ' as ' + nick);
             if (typeof config.joinCommands !== 'undefined' &&config.joinCommands.hasOwnProperty(channel) && config.joinCommands[channel].length > 0) {
                 _.each(config.joinCommands[channel], function (cmd) {
@@ -122,7 +122,7 @@ exports.init = function () {
                     self.withUserModeLevel(message.nick, to, c.mode, callback);
                 }
             }, this);
-        } else if (config.nick === to) {
+        } else if (client.nick === to) {
             // private message commands
             _.each(msgs, function (c) {
                 callback = function() { c.callback(client, message, cmdArgs); };

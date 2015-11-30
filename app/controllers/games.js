@@ -384,9 +384,11 @@ var Games = function Games() {
     {
         var channel = arguments[0],
             nicks = arguments[1],
-            message = _.template('slides a tall, cold glass of <%= randomBeer %> over to <%= nick %>');
+            message =    _.template('slides a tall, cold glass of <%= randomBeer %> over to <%= nick %>');
+            botMessage = _.template('pours itself a tall, cold glass of <%= randomBeer %>. cheers!');
         _.each(self.beerPending[channel], function (nick) {
             if (_.indexOf(_.keys(nicks), nick) > -1) {
+                if (client.nick == nick) { message = botMessage; }
                 client.action(channel, message({
                     randomBeer: config.beers[Math.floor(Math.random() * config.beers.length)],
                     nick: nick

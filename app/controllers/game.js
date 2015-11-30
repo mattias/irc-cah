@@ -867,7 +867,7 @@ var Game = function Game(channel, client, config, cmdArgs) {
 
         // loop through and send messages
         _.each(nicks, function(mode, nick) {
-            if (_.indexOf(exemptModes, mode) < 0 && nick !== config.nick) {
+            if (_.indexOf(exemptModes, mode) < 0 && nick !== client.nick) {
                 self.notice(nick, util.format(nick + ': A new game of Cards Against Humanity just began in ' + channel + '. Head over and %sjoin if you\'d like to get in on the fun!', p));
             }
         });
