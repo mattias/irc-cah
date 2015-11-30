@@ -71,6 +71,11 @@ Main configuration files are located in `config/env`. There are two files by def
 
     "stopOnLastPlayerLeave": false,   // - Stop the game if there are no more players (playing or waiting).
 
+    "commandPrefixChars": ".!",
+
+    // ^ List of characters a command can start with, e.g. !join, .join
+    //   The first character is considered the default char and is used in help text.
+
     "topic": {
 
     // The bot can add/update a segment of the channel topic when games start and end.

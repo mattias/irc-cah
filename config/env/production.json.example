@@ -9,13 +9,14 @@
     "pointLimit":    10,
     "exitOnError": false,
     "stopOnLastPlayerLeave": false,
+    "commandPrefixChars": ".!",
     "topic": {
         "position": "right",
         "separator": "::",
         "messages": {
-            "on":  ["A game is running. Type !join to get in on it!", "bold.yellow"],
+            "on":  ["A game is running. Type %%join to get in on it!", "bold.yellow"],
             "off": "",
-            "winner": ["Reigning champion: <%= nick %>", "bold.yellow"]
+            "winner": ["reigning champion: <%= nick %>", "bold.yellow"]
         }
     },
     "connectCommands": [
@@ -36,7 +37,7 @@
         "#cah": [
             {
                 "target": "#cah",
-                "message": "Hi <%= nick %>! Type !join to play"
+                "message": "Hi <%= nick %>! Type %%join to play"
             }
         ]
     },

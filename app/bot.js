@@ -3,7 +3,8 @@ var _ = require('underscore'),
     config = require('../config/config'),
     client,
     commands = [],
-    msgs = [];
+    msgs = [],
+    p = config.commandPrefixChars[0];
 
 /**
  * Initialize the bot
@@ -58,7 +59,7 @@ exports.init = function () {
                 _.each(config.joinCommands[channel], function (cmd) {
                     if(cmd.target && cmd.message) {
                         message = _.template(cmd.message)
-                        client.say(cmd.target, message({nick: nick, channel: channel}));
+                        client.say(cmd.target, message({nick: nick, channel: channel}).split('%%').join(p));
                     }
                 });
             }
@@ -68,7 +69,7 @@ exports.init = function () {
             _.each(config.userJoinCommands[channel], function (cmd) {
                 if(cmd.target && cmd.message) {
                     message = _.template(cmd.message)
-                    client.say(cmd.target, message({nick: nick, channel: channel}));
+                    client.say(cmd.target, message({nick: nick, channel: channel}).split('%%').join(p));
                 }
             });
         }
@@ -91,7 +92,12 @@ exports.init = function () {
     client.addListener('message', function (from, to, text, message) {
         console.log('message from ' + from + ' to ' + to + ': ' + text);
         // parse command
-        var cmdArr = text.trim().match(/^[\.|!]([^\s]+)\s?(.*)$/i);
+        var escape = ['-', '^'];
+        var prefix = _.map(config.commandPrefixChars.split(''), function(char) {
+            return (_.contains(escape, char)) ? "\\" + char : char;
+        }).join('|');
+        var cmdPattern = new RegExp('^[' + prefix + ']([^\s]+)\s?(.*)$', 'i');
+        var cmdArr = text.trim().match(cmdPattern);
         if (!cmdArr || cmdArr.length <= 1) {
             // command not found
             return false;

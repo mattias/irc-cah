@@ -3,6 +3,7 @@ var util = require('util'),
     _ = require('underscore'),
     Cards = require('../controllers/cards'),
     Card = require('../models/card');
+    p; // default prefix char from config
 
 /**
  * Available states for game
@@ -49,6 +50,7 @@ var Game = function Game(channel, client, config, cmdArgs) {
     self.notifyUsersPending = false;
     self.topicPending = "";
     self.pointLimit = 0; // point limit for the game, defaults to 0 (== no limit)
+    p = config.commandPrefixChars[0]; // default prefix char
 
     console.log('Loaded', config.cards.length, 'cards:');
     var questions = _.filter(config.cards, function(card) {
@@ -140,7 +142,7 @@ var Game = function Game(channel, client, config, cmdArgs) {
     self.pause = function () {
         // check if game is already paused
         if (self.state === STATES.PAUSED) {
-            self.say('Game is already paused. Type !resume to begin playing again.');
+            self.say(util.format('Game is already paused. Type %sresume to begin playing again.', p));
             return false;
         }
 
@@ -156,7 +158,7 @@ var Game = function Game(channel, client, config, cmdArgs) {
         self.pauseState.elapsed = now.getTime() - self.roundStarted.getTime();
         self.state = STATES.PAUSED;
 
-        self.say('Game is now paused. Type !resume to begin playing again.');
+        self.say(util.format('Game is now paused. Type %sresume to begin playing again.', p));
 
         // clear turn timers
         clearTimeout(self.turnTimer);
@@ -453,7 +455,7 @@ var Game = function Game(channel, client, config, cmdArgs) {
                 self.say('The czar has fled the scene. So I will pick the winner on this round.');
                 self.selectWinner(Math.round(Math.random() * (self.table.answer.length - 1)));
             } else {
-                self.say(self.czar.nick + ': Select the winner (!winner <entry number>)');
+                self.say(util.format(self.czar.nick + ': Select the winner (%swinner <entry number>)', p));
                 // start turn timer, check every 10 secs
                 clearInterval(self.winnerTimer);
                 self.roundStarted = new Date();
@@ -866,7 +868,7 @@ var Game = function Game(channel, client, config, cmdArgs) {
         // loop through and send messages
         _.each(nicks, function(mode, nick) {
             if (_.indexOf(exemptModes, mode) < 0 && nick !== config.nick) {
-                self.notice(nick, nick + ': A new game of Cards Against Humanity just began in ' + channel + '. Head over and !join if you\'d like to get in on the fun!');
+                self.notice(nick, util.format(nick + ': A new game of Cards Against Humanity just began in ' + channel + '. Head over and %sjoin if you\'d like to get in on the fun!', p));
             }
         });
 
@@ -906,7 +908,7 @@ var Game = function Game(channel, client, config, cmdArgs) {
         if (message == "") { return false; }
 
         // set up handler
-        self.topicPending = message;
+        self.topicPending = message.split('%%').join(p); // replace command prefix
 
         // trigger handler
         client.send('TOPIC', channel);
@@ -971,7 +973,7 @@ var Game = function Game(channel, client, config, cmdArgs) {
     self.setTopic(config.topic.messages.on);
 
     // announce the game on the channel
-    self.say('A new game of ' + c.rainbow('Cards Against Humanity') + '. The game starts in 30 seconds. Type !join to join the game any time.');
+    self.say(util.format('A new game of ' + c.rainbow('Cards Against Humanity') + '. The game starts in 30 seconds. Type %sjoin to join the game any time.', p));
 
     // notify users
     if (typeof config.notifyUsers !== 'undefined' && config.notifyUsers) {
