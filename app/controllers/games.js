@@ -357,6 +357,21 @@ var Games = function Games() {
     };
 
     /**
+     * Switch to another language and notify users of change
+     * TODO: write functionality ( https://github.com/mashpie/i18n-node )
+     * @param client
+     * @param message
+     * @param cmdArgs
+     */
+    self.lang = function(client, message, cmdArgs) {
+        var channel = message.args[0],
+            msg = _.template('Switched to <%= lang %>.');
+        client.say(channel, msg({
+            lang: cmdArgs[0]
+        }));
+    };
+
+    /**
      * Send a beer
      * @param client
      * @param message
